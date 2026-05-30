@@ -178,22 +178,22 @@
 </div>
 
 <!-- Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 const SUPABASE_URL = 'https://lxlbqqmgztdjyyxqwzkh.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4bGJxcW1nenRkanl5eHF3emtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjcwMTUsImV4cCI6MjA5NTcwMzAxNX0.m8Z4Ky7OaHxOKE1OyVQhFSdeXyINgjM-pFlqpGKlyUU';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const _sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 async function listenOrders() {
   await fetchOrders();
-  supabase
+  _sb
     .channel('orders-realtime')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => fetchOrders())
     .subscribe();
 }
 
 async function fetchOrders() {
-  const { data, error } = await supabase
+  const { data, error } = await _sb
     .from('orders')
     .select('*')
     .order('created_at', { ascending: false });
@@ -248,18 +248,18 @@ function renderOrders(orders) {
 
 async function markDone(id, btn) {
   btn.disabled = true;
-  const { error } = await supabase.from('orders').update({ status: 'done' }).eq('id', id);
+  const { error } = await _sb.from('orders').update({ status: 'done' }).eq('id', id);
   if (error) { console.error(error); btn.disabled = false; }
 }
 
 async function deleteOrder(id) {
   if (!confirm('이 주문을 삭제할까요?')) return;
-  await supabase.from('orders').delete().eq('id', id);
+  await _sb.from('orders').delete().eq('id', id);
 }
 
 async function clearDoneOrders() {
   if (!confirm('완료된 주문을 모두 삭제할까요?')) return;
-  await supabase.from('orders').delete().eq('status', 'done');
+  await _sb.from('orders').delete().eq('status', 'done');
 }
 
 listenOrders();

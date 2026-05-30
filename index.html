@@ -1196,10 +1196,10 @@
 </footer>
 
 <!-- Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 // ── Supabase 설정 ──
-var _supabase = window.supabase.createClient(
+var _supabase = supabase.createClient(
   'https://lxlbqqmgztdjyyxqwzkh.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4bGJxcW1nenRkanl5eHF3emtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjcwMTUsImV4cCI6MjA5NTcwMzAxNX0.m8Z4Ky7OaHxOKE1OyVQhFSdeXyINgjM-pFlqpGKlyUU'
 );
