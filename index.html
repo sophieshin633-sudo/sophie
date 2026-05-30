@@ -1198,9 +1198,9 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ── Supabase 설정 ──
-const SUPABASE_URL = 'https://lxlbqqmgztdjyyxqwzkh.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4bGJxcW1nenRkanl5eHF3emtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjcwMTUsImV4cCI6MjA5NTcwMzAxNX0.m8Z4Ky7OaHxOKE1OyVQhFSdeXyINgjM-pFlqpGKlyUU';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+var SUPABASE_URL = 'https://lxlbqqmgztdjyyxqwzkh.supabase.co';
+var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4bGJxcW1nenRkanl5eHF3emtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjcwMTUsImV4cCI6MjA5NTcwMzAxNX0.m8Z4Ky7OaHxOKE1OyVQhFSdeXyINgjM-pFlqpGKlyUU';
+var _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ── 장바구니 상태 ──
 let cart = []; // [{name, price, qty}]
@@ -1277,7 +1277,7 @@ async function submitOrder() {
     status: 'pending'
   };
   try {
-    const { error } = await supabase.from('orders').insert([order]);
+    const { error } = await _supabase.from('orders').insert([order]);
     if (error) throw error;
     cart = [];
     updateCartUI();
