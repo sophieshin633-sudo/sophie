@@ -1274,8 +1274,7 @@ async function submitOrder() {
     name,
     items: cart.map(i => ({ name: i.name, price: i.price, qty: i.qty })),
     total: cart.reduce((s, i) => s + i.price * i.qty, 0),
-    status: 'pending',
-    createdAt: new Date().toISOString()
+    status: 'pending'
   };
   try {
     const { error } = await supabase.from('orders').insert([order]);
