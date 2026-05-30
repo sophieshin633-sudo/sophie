@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>쉴만한 물가 Cafe</title>
+  <style>
+    @font-face {
+      font-family: 'S-Core Dream';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-3Light.woff') format('woff');
+      font-weight: 300;
+    }
+    @font-face {
+      font-family: 'S-Core Dream';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-4Regular.woff') format('woff');
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: 'S-Core Dream';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-5Medium.woff') format('woff');
+      font-weight: 500;
+    }
+    @font-face {
+      font-family: 'S-Core Dream';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-6Bold.woff') format('woff');
+      font-weight: 700;
+    }
+    @font-face {
+      font-family: 'S-Core Dream';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-8Heavy.woff') format('woff');
+      font-weight: 800;
+    }
+
+    :root {
+      --cream: #fdf6ed;
+      --warm-white: #fff9f2;
+      --brown: #7c5c3e;
+      --light-brown: #b8906a;
+      --tan: #d4b896;
+      --deep: #4a3728;
+      --accent: #a67c52;
+      --text: #3d2b1f;
+      --muted: #9b7e66;
+      --card-bg: #fffaf4;
+      --orange: #e86a1a;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--cream);
+      color: var(--text);
+      font-family: 'S-Core Dream', sans-serif;
+      font-weight: 400;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 60px;
+      background: rgba(253,246,237,0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(180,140,100,0.15);
+    }
+    .nav-logo {
+      font-family: 'S-Core Dream', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--brown);
+      letter-spacing: 0.02em;
+    }
+    .nav-logo span { color: var(--light-brown); }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--brown); }
+
+    /* ─── HERO ─── */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 150px 70px 80px 80px;
+      position: relative;
+      z-index: 2;
+    }
+    .hero-tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--light-brown);
+      background: rgba(180,140,100,0.12);
+      padding: 6px 16px;
+      border-radius: 100px;
+      margin-bottom: 32px;
+      width: fit-content;
+    }
+    .hero-title {
+      font-family: 'S-Core Dream', sans-serif;
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      font-weight: 800;
+      line-height: 1.25;
+      color: var(--orange);
+      margin-bottom: 20px;
+    }
+    .hero-title .en {
+      font-weight: 300;
+      font-size: 0.55em;
+      color: var(--light-brown);
+      display: block;
+      letter-spacing: 0.06em;
+      margin-top: 6px;
+    }
+    .hero-desc {
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 2;
+      color: var(--muted);
+      max-width: 420px;
+      margin-bottom: 44px;
+    }
+    .hero-hours {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.85rem;
+      color: var(--brown);
+      font-weight: 600;
+    }
+    .hero-hours .dot {
+      width: 8px; height: 8px;
+      background: var(--light-brown);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform:scale(1); }
+      50% { opacity:0.5; transform:scale(0.8); }
+    }
+    .hero-right { position: relative; overflow: hidden; }
+    .hero-illustration { width: 100%; height: 100%; min-height: 100vh; }
+    .deco-circle {
+      position: absolute; border-radius: 50%; opacity: 0.08;
+      background: var(--brown); pointer-events: none;
+    }
+    .deco-1 { width:300px; height:300px; top:-80px; left:-100px; }
+    .deco-2 { width:180px; height:180px; bottom:60px; left:40px; }
+
+    /* ─── SECTION COMMON ─── */
+    .section-tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--light-brown);
+      margin-bottom: 14px;
+    }
+    .section-title {
+      font-family: 'S-Core Dream', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      font-weight: 700;
+      color: var(--deep);
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+    .section-sub {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.9;
+      font-weight: 400;
+    }
+
+    /* ─── ABOUT ─── */
+    .about {
+      padding: 100px 80px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      background: var(--warm-white);
+    }
+    .about-visual { position: relative; }
+    .about-card {
+      background: var(--card-bg);
+      border-radius: 28px;
+      padding: 48px;
+      border: 1px solid rgba(180,140,100,0.18);
+      box-shadow: 0 20px 60px rgba(124,92,62,0.08);
+      text-align: center;
+    }
+    .about-icon { font-size: 3rem; margin-bottom: 20px; display: block; }
+    .about-card h3 {
+      font-family: 'S-Core Dream', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--brown);
+      margin-bottom: 12px;
+    }
+    .about-card p { font-size: 0.92rem; line-height: 1.9; color: var(--muted); }
+    .about-badge {
+      position: absolute;
+      top: -18px; right: -18px;
+      background: var(--brown);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 10px 18px;
+      border-radius: 100px;
+    }
+
+    /* ─── WEATHER ─── */
+    .weather-bar {
+      position: fixed;
+      top: 61px; left: 0; right: 0;
+      z-index: 99;
+      background: rgba(253,246,237,0.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(180,140,100,0.15);
+      padding: 9px 60px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .weather-date {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--brown);
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .weather-divider {
+      width: 1px; height: 22px;
+      background: rgba(180,140,100,0.3);
+      flex-shrink: 0;
+    }
+    .weather-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--light-brown);
+      white-space: nowrap;
+    }
+    .weather-content {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .weather-icon { font-size: 1.3rem; line-height: 1; }
+    .weather-temp {
+      font-family: 'S-Core Dream', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--deep);
+    }
+    .weather-desc {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--muted);
+    }
+    .weather-meta {
+      display: flex;
+      gap: 14px;
+      margin-left: 8px;
+    }
+    .weather-meta-item {
+      font-size: 0.74rem;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .weather-meta-item strong { color: var(--brown); font-weight: 700; }
+    @media (max-width: 900px) {
+      .weather-bar { top: 53px; padding: 8px 20px; gap: 12px; }
+      .weather-meta { display: none; }
+    }
+
+    /* ─── MENU ─── */
+    .menu { padding: 100px 80px; background: var(--cream); }
+    .menu-header { text-align: center; margin-bottom: 64px; }
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 28px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .menu-card {
+      background: var(--card-bg);
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid rgba(180,140,100,0.14);
+      box-shadow: 0 8px 32px rgba(124,92,62,0.06);
+      transition: transform 0.35s ease, box-shadow 0.35s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .menu-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(124,92,62,0.14);
+    }
+    .menu-img {
+      width: 100%; height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, #f5e8d5 0%, #efe0c8 100%);
+      position: relative; overflow: hidden;
+    }
+    .menu-img svg { width:100%; height:100%; position:absolute; top:0; left:0; }
+    .menu-body { padding: 22px 24px 20px; flex: 1; }
+    .menu-name {
+      font-family: 'S-Core Dream', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--deep);
+      margin-bottom: 3px;
+    }
+    .menu-name-en {
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: var(--light-brown);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .menu-desc {
+      margin-top: 10px;
+      font-size: 0.83rem;
+      color: var(--muted);
+      line-height: 1.7;
+      font-weight: 400;
+    }
+    .menu-btn {
+      display: block;
+      margin: 16px 24px 22px;
+      padding: 11px 0;
+      background: var(--orange);
+      color: #fff;
+      text-align: center;
+      border-radius: 12px;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      transition: background 0.25s, transform 0.2s;
+    }
+    .menu-btn:hover { background: #c85a10; transform: scale(1.02); }
+
+    /* ─── HOURS ─── */
+    .hours {
+      padding: 80px;
+      background: var(--deep);
+      color: #fff;
+      text-align: center;
+    }
+    .hours .section-tag { color: var(--tan); }
+    .hours .section-title { color: #fff; }
+    .hours .section-sub { color: rgba(255,255,255,0.6); }
+    .hours-box {
+      margin-top: 48px;
+      display: inline-flex;
+      align-items: center;
+      gap: 40px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 20px;
+      padding: 36px 60px;
+    }
+    .hours-day {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--tan);
+      margin-bottom: 8px;
+    }
+    .hours-time {
+      font-family: 'S-Core Dream', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .hours-divider { width:1px; height:60px; background: rgba(255,255,255,0.2); }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 40px 80px;
+      background: var(--deep);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    footer .logo {
+      font-family: 'S-Core Dream', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: rgba(255,255,255,0.7);
+    }
+    footer p { font-size: 0.78rem; color: rgba(255,255,255,0.35); }
+
+    /* ─── ANIMATIONS ─── */
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(28px); }
+      to { opacity:1; transform:translateY(0); }
+    }
+    .hero-left > * { animation: fadeUp 0.8s ease both; }
+    .hero-left > *:nth-child(1) { animation-delay: 0.1s; }
+    .hero-left > *:nth-child(2) { animation-delay: 0.25s; }
+    .hero-left > *:nth-child(3) { animation-delay: 0.4s; }
+    .hero-left > *:nth-child(4) { animation-delay: 0.55s; }
+    .menu-card { animation: fadeUp 0.6s ease both; }
+    .menu-card:nth-child(1) { animation-delay: 0.1s; }
+    .menu-card:nth-child(2) { animation-delay: 0.18s; }
+    .menu-card:nth-child(3) { animation-delay: 0.26s; }
+    .menu-card:nth-child(4) { animation-delay: 0.34s; }
+    .menu-card:nth-child(5) { animation-delay: 0.42s; }
+    .menu-card:nth-child(6) { animation-delay: 0.5s; }
+    .menu-card:nth-child(7) { animation-delay: 0.58s; }
+
+    /* ─── QR PAYMENT ─── */
+    .payment-section {
+      margin-top: 60px;
+      display: flex;
+      justify-content: center;
+    }
+    .payment-card {
+      background: var(--card-bg);
+      border: 1px solid rgba(180,140,100,0.18);
+      border-radius: 28px;
+      box-shadow: 0 12px 40px rgba(124,92,62,0.09);
+      padding: 40px 48px;
+      display: flex;
+      align-items: center;
+      gap: 48px;
+      max-width: 680px;
+      width: 100%;
+    }
+    .payment-qr-wrap {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+    .payment-qr-wrap canvas {
+      border-radius: 12px;
+      border: 6px solid #fff;
+      box-shadow: 0 4px 16px rgba(124,92,62,0.12);
+    }
+    .qr-scan-hint {
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+    }
+    .payment-info { flex: 1; }
+    .payment-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--orange);
+      background: rgba(232,106,26,0.1);
+      padding: 4px 12px;
+      border-radius: 100px;
+      margin-bottom: 16px;
+    }
+    .payment-title {
+      font-family: 'S-Core Dream', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--deep);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+    .payment-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 0;
+      border-bottom: 1px dashed rgba(180,140,100,0.2);
+    }
+    .payment-row:last-child { border-bottom: none; padding-bottom: 0; }
+    .payment-row-label {
+      font-size: 0.74rem;
+      font-weight: 600;
+      color: var(--muted);
+      width: 52px;
+      flex-shrink: 0;
+    }
+    .payment-row-value {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--deep);
+      letter-spacing: 0.03em;
+    }
+    @media (max-width: 900px) {
+      .payment-card { flex-direction: column; padding: 32px 24px; gap: 28px; text-align: center; }
+      .payment-row { justify-content: center; }
+      .payment-row-label { width: auto; }
+    }
+
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-links { gap: 20px; }
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-right { height: 50vw; min-height: 280px; }
+      .hero-left { padding: 120px 32px 60px; }
+      .about { grid-template-columns: 1fr; padding: 60px 32px; gap: 40px; }
+      .menu { padding: 60px 24px; }
+      .hours { padding: 60px 24px; }
+      .hours-box { flex-direction: column; gap: 20px; padding: 32px 40px; }
+      .hours-divider { width:60px; height:1px; }
+      footer { flex-direction: column; gap: 12px; padding: 30px 24px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">쉴만한 <span>물가</span></div>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#menu">Menu</a></li>
+    <li><a href="#hours">Hours</a></li>
+  </ul>
+</nav>
+
+<!-- WEATHER -->
+<div class="weather-bar" id="weather-bar">
+  <div class="weather-date" id="weather-date"></div>
+  <div class="weather-divider"></div>
+  <div class="weather-label">Weather</div>
+  <div class="weather-content" id="weather-content">
+    <span class="weather-desc">불러오는 중...</span>
+  </div>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="deco-circle deco-1"></div>
+  <div class="deco-circle deco-2"></div>
+  <div class="hero-left">
+    <div class="hero-tag">☕ Church Cafe · 교회 카페</div>
+    <h1 class="hero-title">
+      쉴만한 물가
+      <span class="en">A Place to Rest by Still Waters</span>
+    </h1>
+    <p class="hero-desc">
+      예배 후, 따뜻한 한 잔과 함께<br/>
+      서로의 이야기를 나누는 공간.<br/>
+      당신의 쉼이 시작되는 곳입니다.
+    </p>
+    <div class="hero-hours">
+      <div class="dot"></div>
+      <span>Sunday Open · 9:00 AM – 2:00 PM</span>
+    </div>
+  </div>
+  <div class="hero-right">
+    <svg class="hero-illustration" viewBox="0 0 700 800" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+      <defs>
+        <radialGradient id="sunlight" cx="70%" cy="20%" r="70%">
+          <stop offset="0%" stop-color="#ffe8b0" stop-opacity="1"/>
+          <stop offset="50%" stop-color="#fdd98a" stop-opacity="0.7"/>
+          <stop offset="100%" stop-color="#f5c872" stop-opacity="0.3"/>
+        </radialGradient>
+        <linearGradient id="tableGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#c8a06a"/>
+          <stop offset="100%" stop-color="#a07840"/>
+        </linearGradient>
+        <linearGradient id="cupGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#ffffff"/>
+          <stop offset="100%" stop-color="#f0e8d8"/>
+        </linearGradient>
+        <linearGradient id="coffeeGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#6b3e2e"/>
+          <stop offset="100%" stop-color="#4a2810"/>
+        </linearGradient>
+        <linearGradient id="windowGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ffe8a0" stop-opacity="0.9"/>
+          <stop offset="100%" stop-color="#ffc840" stop-opacity="0.4"/>
+        </linearGradient>
+        <linearGradient id="wallGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#f5e8d0"/>
+          <stop offset="100%" stop-color="#e8d4b0"/>
+        </linearGradient>
+        <filter id="blur"><feGaussianBlur stdDeviation="18"/></filter>
+        <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+          <stop offset="60%" stop-color="transparent"/>
+          <stop offset="100%" stop-color="#c8952a" stop-opacity="0.18"/>
+        </radialGradient>
+      </defs>
+      <rect width="700" height="800" fill="url(#wallGrad)"/>
+      <ellipse cx="580" cy="100" rx="280" ry="260" fill="url(#sunlight)" filter="url(#blur)" opacity="0.9"/>
+      <rect x="400" y="60" width="250" height="320" rx="12" fill="url(#windowGrad)" opacity="0.6"/>
+      <rect x="400" y="60" width="250" height="320" rx="12" fill="none" stroke="#c8a060" stroke-width="10"/>
+      <line x1="524" y1="60" x2="524" y2="380" stroke="#c8a060" stroke-width="6"/>
+      <line x1="400" y1="220" x2="650" y2="220" stroke="#c8a060" stroke-width="6"/>
+      <polygon points="400,60 650,60 560,800 200,800" fill="#ffeea0" opacity="0.1"/>
+      <polygon points="480,60 650,80 500,800 300,800" fill="#ffe080" opacity="0.1"/>
+      <rect x="0" y="640" width="700" height="160" fill="#c8a070" opacity="0.3"/>
+      <rect x="100" y="580" width="480" height="80" rx="12" fill="url(#tableGrad)"/>
+      <rect x="100" y="580" width="480" height="14" rx="7" fill="#d4a870"/>
+      <rect x="140" y="658" width="28" height="100" rx="6" fill="#8a6030"/>
+      <rect x="540" y="658" width="28" height="100" rx="6" fill="#8a6030"/>
+      <ellipse cx="320" cy="580" rx="100" ry="18" fill="#e8dcc8"/>
+      <ellipse cx="320" cy="575" rx="90" ry="14" fill="#f0e8d8"/>
+      <path d="M260,440 Q255,575 280,575 L360,575 Q385,575 380,440 Z" fill="url(#cupGrad)" stroke="#d0c0a0" stroke-width="2"/>
+      <ellipse cx="320" cy="440" rx="60" ry="18" fill="url(#coffeeGrad)"/>
+      <ellipse cx="320" cy="440" rx="40" ry="10" fill="#8b5a3c" opacity="0.5"/>
+      <path d="M300,440 Q320,432 340,440 Q320,448 300,440" fill="#c8906a" opacity="0.6"/>
+      <path d="M380,470 Q430,470 430,510 Q430,550 380,550" fill="none" stroke="url(#cupGrad)" stroke-width="22" stroke-linecap="round"/>
+      <path d="M380,470 Q425,470 425,510 Q425,546 380,546" fill="none" stroke="#d0c0a0" stroke-width="2"/>
+      <path d="M295,430 Q285,400 295,370 Q305,340 295,310" fill="none" stroke="#c8b090" stroke-width="3" stroke-linecap="round" opacity="0.6">
+        <animate attributeName="d" values="M295,430 Q285,400 295,370 Q305,340 295,310;M295,430 Q305,400 295,370 Q285,340 295,310;M295,430 Q285,400 295,370 Q305,340 295,310" dur="3s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.6;0.2;0.6" dur="3s" repeatCount="indefinite"/>
+      </path>
+      <path d="M320,425 Q310,395 320,360 Q330,325 320,295" fill="none" stroke="#c8b090" stroke-width="3" stroke-linecap="round" opacity="0.5">
+        <animate attributeName="d" values="M320,425 Q310,395 320,360 Q330,325 320,295;M320,425 Q330,395 320,360 Q310,325 320,295;M320,425 Q310,395 320,360 Q330,325 320,295" dur="3.5s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.5;0.1;0.5" dur="3.5s" repeatCount="indefinite"/>
+      </path>
+      <path d="M345,430 Q355,400 345,370 Q335,340 345,310" fill="none" stroke="#c8b090" stroke-width="3" stroke-linecap="round" opacity="0.55">
+        <animate attributeName="d" values="M345,430 Q355,400 345,370 Q335,340 345,310;M345,430 Q335,400 345,370 Q355,340 345,310;M345,430 Q355,400 345,370 Q335,340 345,310" dur="4s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.55;0.15;0.55" dur="4s" repeatCount="indefinite"/>
+      </path>
+      <ellipse cx="520" cy="575" rx="38" ry="10" fill="#b09060"/>
+      <path d="M490,575 L500,520 L540,520 L550,575 Z" fill="#8a7050"/>
+      <ellipse cx="510" cy="505" rx="22" ry="32" fill="#5a8040" transform="rotate(-20,510,505)"/>
+      <ellipse cx="530" cy="500" rx="20" ry="30" fill="#6a9050" transform="rotate(15,530,500)"/>
+      <ellipse cx="520" cy="490" rx="16" ry="28" fill="#4a7030" transform="rotate(-5,520,490)"/>
+      <rect x="160" y="545" width="88" height="60" rx="4" fill="#b06040" transform="rotate(-5,200,575)"/>
+      <rect x="164" y="549" width="80" height="52" rx="3" fill="#c07050" transform="rotate(-5,200,575)"/>
+      <line x1="168" y1="558" x2="236" y2="555" stroke="#d09070" stroke-width="2" opacity="0.5" transform="rotate(-5,200,575)"/>
+      <line x1="168" y1="566" x2="236" y2="563" stroke="#d09070" stroke-width="2" opacity="0.5" transform="rotate(-5,200,575)"/>
+      <line x1="168" y1="574" x2="236" y2="571" stroke="#d09070" stroke-width="2" opacity="0.5" transform="rotate(-5,200,575)"/>
+      <rect width="700" height="800" fill="url(#sunlight)" opacity="0.12"/>
+      <rect width="700" height="800" fill="url(#vignette)"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-content">
+    <div class="section-tag">Our Story</div>
+    <h2 class="section-title">예배 후,<br/>따뜻한 나눔의 시간</h2>
+    <p class="section-sub">
+      쉴만한 물가는 교회 1층에 자리한 작은 카페입니다.<br/>
+      예배를 마친 성도들이 서로의 이야기를 나누고,<br/>
+      편안히 쉬어갈 수 있는 따뜻한 공간을 꿈꿉니다.<br/><br/>
+      우드와 화이트 톤의 포근한 분위기 속에서<br/>
+      한 잔의 커피와 함께 진심 어린 대화를 나누세요.
+    </p>
+  </div>
+  <div class="about-visual">
+    <div class="about-badge">Wood &amp; White Tone</div>
+    <div class="about-card">
+      <span class="about-icon">✝️</span>
+      <h3>교회 카페</h3>
+      <p>예배 공동체와 함께하는<br/>따뜻하고 편안한 쉼터</p>
+    </div>
+  </div>
+</section>
+
+<!-- MENU -->
+<section class="menu" id="menu">
+  <div class="menu-header">
+    <div class="section-tag">Our Menu</div>
+    <h2 class="section-title">따뜻한 한 잔을 드려요</h2>
+    <p class="section-sub">정성껏 준비한 음료와 함께 쉬어가세요</p>
+  </div>
+  <div class="menu-grid">
+
+    <!-- 아이스 아메리카노 -->
+    <div class="menu-card">
+      <div class="menu-img">
+        <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="300" height="200" fill="#f0e4cc"/>
+          <ellipse cx="150" cy="110" rx="55" ry="16" fill="#c8b090"/>
+          <path d="M100,110 Q95,170 108,170 L192,170 Q205,170 200,110 Z" fill="#3a3228" opacity="0.92"/>
+          <ellipse cx="150" cy="110" rx="55" ry="14" fill="#2a2018"/>
+          <rect x="128" y="122" width="20" height="20" rx="4" fill="#a0c8e0" opacity="0.7" transform="rotate(10,138,132)"/>
+          <rect x="150" y="130" width="18" height="18" rx="4" fill="#b8d8f0" opacity="0.65" transform="rotate(-8,159,139)"/>
+          <rect x="114" y="136" width="16" height="16" rx="3" fill="#90b8d8" opacity="0.6" transform="rotate(5,122,144)"/>
+          <rect x="168" y="80" width="8" height="100" rx="4" fill="#d08060"/>
+          <ellipse cx="172" cy="170" rx="15" ry="5" fill="#c09070"/>
+        </svg>
+      </div>
+      <div class="menu-body">
+        <div class="menu-name">아이스 아메리카노</div>
+        <div class="menu-name-en">Iced Americano</div>
+        <div class="menu-desc">진한 에스프레소에 시원한 얼음을 더한 클래식</div>
+      </div>
+      <a class="menu-btn" href="menu_detail.html#americano">Recipe 보기 →</a>
+    </div>
+
+    <!-- 아이스 라떼 -->
+    <div class="menu-card">
+      <div class="menu-img">
+        <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="300" height="200" fill="#f5ede0"/>
+          <ellipse cx="150" cy="110" rx="55" ry="16" fill="#d4b890"/>
+          <path d="M100,110 Q95,170 108,170 L192,170 Q205,170 200,110 Z" fill="#c89060" opacity="0.85"/>
+          <ellipse cx="150" cy="110" rx="55" ry="14" fill="#d4a870"/>
+          <path d="M100,130 Q95,170 108,170 L192,170 Q205,170 200,130 Z" fill="#f0e0c0" opacity="0.5"/>
+          <rect x="130" y="125" width="18" height="18" rx="4" fill="#c8e0f0" opacity="0.6" transform="rotate(8,139,134)"/>
+          <rect x="152" y="132" width="16" height="16" rx="3" fill="#d8eeff" opacity="0.55" transform="rotate(-6,160,140)"/>
+          <rect x="168" y="82" width="8" height="98" rx="4" fill="#90a870"/>
+        </svg>
+      </div>
+      <div class="menu-body">
+        <div class="menu-name">아이스 라떼</div>
+        <div class="menu-name-en">Iced Latte</div>
+        <div class="menu-desc">부드러운 우유와 에스프레소의 조화로운 만남</div>
+      </div>
+      <a class="menu-btn" href="menu_detail.html#latte">Recipe 보기 →</a>
+    </div>
+
+    <!-- 아이스 티 -->
+    <div class="menu-card">
+      <div class="menu-img">
+        <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="300" height="200" fill="#f0ede4"/>
+          <ellipse cx="150" cy="110" rx="55" ry="16" fill="#c4a870"/>
+          <path d="M100,110 Q95,170 108,170 L192,170 Q205,170 200,110 Z" fill="#c8a040" opacity="0.7"/>
+          <ellipse cx="150" cy="110" rx="55" ry="14" fill="#d4b040"/>
+          <circle cx="148" cy="138" r="20" fill="#f0d840" opacity="0.8"/>
+          <circle cx="148" cy="138" r="16" fill="#f8e850" opacity="0.7"/>
+          <line x1="148" y1="122" x2="148" y2="154" stroke="#e0c030" stroke-width="1.5"/>
+          <line x1="132" y1="138" x2="164" y2="138" stroke="#e0c030" stroke-width="1.5"/>
+          <rect x="114" y="128" width="16" height="16" rx="3" fill="#c0d8f0" opacity="0.55" transform="rotate(-5,122,136)"/>
+          <rect x="170" y="80" width="8" height="100" rx="4" fill="#e0c060"/>
+        </svg>
+      </div>
+      <div class="menu-body">
+        <div class="menu-name">아이스 티</div>
+        <div class="menu-name-en">Iced Tea</div>
+        <div class="menu-desc">향긋하고 깔끔한 티, 여름의 상쾌함</div>
+      </div>
+      <a class="menu-btn" href="menu_detail.html#icedtea">Recipe 보기 →</a>
+    </div>
+
+    <!-- 자몽 에이드 -->
+    <div class="menu-card">
+      <div class="menu-img">
+        <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="300" height="200" fill="#fceee0"/>
+          <ellipse cx="150" cy="110" rx="55" ry="16" fill="#e09070"/>
+          <path d="M100,110 Q95,170 108,170 L192,170 Q205,170 200,110 Z" fill="#e87050" opacity="0.75"/>
+          <ellipse cx="150" cy="110" rx="55" ry="14" fill="#f08060"/>
+          <circle cx="125" cy="142" r="5" fill="#fff" opacity="0.4"/>
+          <circle cx="155" cy="138" r="4" fill="#fff" opacity="0.35"/>
+          <circle cx="170" cy="152" r="3" fill="#fff" opacity="0.3"/>
+          <circle cx="154" cy="132" r="18" fill="#f09060" opacity="0.85"/>
+          <circle cx="154" cy="132" r="14" fill="#f8a070" opacity="0.7"/>
+          <line x1="154" y1="118" x2="154" y2="146" stroke="#e07040" stroke-width="1.5"/>
+          <line x1="140" y1="132" x2="168" y2="132" stroke="#e07040" stroke-width="1.5"/>
+          <rect x="108" y="132" width="16" height="16" rx="3" fill="#ffd8c0" opacity="0.5" transform="rotate(8,116,140)"/>
+          <rect x="170" y="78" width="8" height="102" rx="4" fill="#ff9060"/>
+        </svg>
+      </div>
+      <div class="menu-body">
+        <div class="menu-name">자몽 에이드</div>
+        <div class="menu-name-en">Grapefruit Ade</div>
+        <div class="menu-desc">상큼달콤한 자몽의 톡 쏘는 청량감</div>
+      </div>
+      <a class="menu-btn" href="menu_detail.html#grapefruit">Recipe 보기 →</a>
+    </div>
+
+    <!-- 레몬 에이드 -->
+    <div class="menu-card">
+      <div class="menu-img">
+        <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="300" height="200" fill="#fdf8e0"/>
+          <ellipse cx="150" cy="110" rx="55" ry="16" fill="#e8d870"/>
+          <path d="M100,110 Q95,170 108,170 L192,170 Q205,170 200,110 Z" fill="#d8c840" opacity="0.7"/>
+          <ellipse cx="150" cy="110" rx="55" ry="14" fill="#e8d840"/>
+          <circle cx="125" cy="142" r="5" fill="#fff" opacity="0.45"/>
+          <circle cx="158" cy="150" r="4" fill="#fff" opacity="0.4"/>
+          <circle cx="148" cy="132" r="18" fill="#f8e030" opacity="0.9"/>
+          <circle cx="148" cy="132" r="14" fill="#fff880" opacity="0.7"/>
+          <line x1="148" y1="118" x2="148" y2="146" stroke="#d0c020" stroke-width="1.5"/>
+          <line x1="134" y1="132" x2="162" y2="132" stroke="#d0c020" stroke-width="1.5"/>
+          <rect x="110" y="130" width="15" height="15" rx="3" fill="#e0f0f0" opacity="0.5" transform="rotate(-6,117,137)"/>
+          <rect x="170" y="80" width="8" height="100" rx="4" fill="#c8c030"/>
+        </svg>
+      </div>
+      <div class="menu-body">
+        <div class="menu-name">레몬 에이드</div>
+        <div class="menu-name-en">Lemon Ade</div>
+        <div class="menu-desc">새콤달콤 레몬의 생기 넘치는 에이드</div>
+      </div>
+      <a class="menu-btn" href="menu_detail.html#lemon">Recipe 보기 →</a>
+    </div>
+
+    <!-- 아인슈페너 -->
+    <div class="menu-card">
+      <div class="menu-img">
+        <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="300" height="200" fill="#f5eddd"/>
+          <path d="M110,90 Q105,165 120,165 L180,165 Q195,165 190,90 Z" fill="#6b3e2e" opacity="0.88"/>
+          <ellipse cx="150" cy="90" rx="40" ry="12" fill="#4a2810"/>
+          <ellipse cx="150" cy="90" rx="50" ry="20" fill="white"/>
+          <path d="M100,90 Q110,72 120,78 Q130,65 140,72 Q150,60 160,68 Q170,58 180,68 Q190,72 200,90 Z" fill="white"/>
+          <path d="M110,85 Q125,75 140,80 Q155,70 170,78 Q185,72 195,84" fill="none" stroke="#f0f0f0" stroke-width="2" opacity="0.6"/>
+          <ellipse cx="150" cy="76" rx="28" ry="10" fill="#7a4a30" opacity="0.2"/>
+        </svg>
+      </div>
+      <div class="menu-body">
+        <div class="menu-name">아인슈페너</div>
+        <div class="menu-name-en">Einspänner</div>
+        <div class="menu-desc">진한 커피 위에 부드러운 생크림을 얹은 비엔나 스타일</div>
+      </div>
+      <a class="menu-btn" href="menu_detail.html#einspanner">Recipe 보기 →</a>
+    </div>
+
+    <!-- 말차 라떼 -->
+    <div class="menu-card">
+      <div class="menu-img">
+        <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+          <rect width="300" height="200" fill="#eef5e8"/>
+          <ellipse cx="150" cy="108" rx="55" ry="15" fill="#90b870"/>
+          <path d="M100,108 Q95,168 108,168 L192,168 Q205,168 200,108 Z" fill="#78a050" opacity="0.85"/>
+          <ellipse cx="150" cy="108" rx="55" ry="13" fill="#8ab860"/>
+          <path d="M138,108 Q145,100 152,108 Q158,115 150,118 Q142,115 138,108" fill="#d8e8c0" opacity="0.6"/>
+          <rect x="125" y="124" width="18" height="18" rx="4" fill="#c8e0d0" opacity="0.6" transform="rotate(6,134,133)"/>
+          <rect x="148" y="130" width="16" height="16" rx="3" fill="#d0eadc" opacity="0.55" transform="rotate(-5,156,138)"/>
+          <rect x="168" y="80" width="8" height="100" rx="4" fill="#6a9048"/>
+        </svg>
+      </div>
+      <div class="menu-body">
+        <div class="menu-name">말차 라떼</div>
+        <div class="menu-name-en">Matcha Latte</div>
+        <div class="menu-desc">고소하고 진한 말차와 우유의 부드러운 블렌드</div>
+      </div>
+      <a class="menu-btn" href="menu_detail.html#matcha">Recipe 보기 →</a>
+    </div>
+
+  </div>
+
+  <!-- QR 결제 -->
+  <div class="payment-section">
+    <div class="payment-card">
+      <div class="payment-qr-wrap">
+        <img id="payment-qr"
+             src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&color=4a3728&bgcolor=fffaf4&data=%EA%B5%AD%EB%AF%BC%EC%9D%80%ED%96%89+669701-04-113410+%EC%8B%A0%ED%98%84%EC%A7%80"
+             alt="결제 QR코드" width="160" height="160"
+             style="border-radius:12px;border:6px solid #fff;box-shadow:0 4px 16px rgba(124,92,62,0.12);">
+        <span class="qr-scan-hint">QR 스캔으로 바로 이체</span>
+      </div>
+      <div class="payment-info">
+        <div class="payment-tag">Payment</div>
+        <div class="payment-title">음료 결제 계좌</div>
+        <div class="payment-row">
+          <span class="payment-row-label">은행</span>
+          <span class="payment-row-value">국민은행</span>
+        </div>
+        <div class="payment-row">
+          <span class="payment-row-label">계좌</span>
+          <span class="payment-row-value">669701-04-113410</span>
+        </div>
+        <div class="payment-row">
+          <span class="payment-row-label">예금주</span>
+          <span class="payment-row-value">신현지</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- HOURS -->
+<section class="hours" id="hours">
+  <div class="section-tag">Hours &amp; Location</div>
+  <h2 class="section-title">언제 방문하실 수 있나요?</h2>
+  <p class="section-sub">매주 주일 예배 후, 성도들과 함께하는 시간입니다</p>
+  <div class="hours-box">
+    <div>
+      <div class="hours-day">Sunday Only</div>
+      <div class="hours-time">9:00 – 14:00</div>
+    </div>
+    <div class="hours-divider"></div>
+    <div>
+      <div class="hours-day">Location</div>
+      <div class="hours-time" style="font-size:1.4rem;">교회 1층</div>
+    </div>
+    <div class="hours-divider"></div>
+    <div>
+      <div class="hours-day">Vibe</div>
+      <div class="hours-time" style="font-size:1.2rem;">따뜻한 나눔 ☕</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">쉴만한 물가 Cafe</div>
+  <p>© 2025 쉴만한 물가 · A Place to Rest by Still Waters</p>
+</footer>
+
+<script>
+const WMO_ICONS = {
+  0:  ['☀️', '맑음'],
+  1:  ['🌤️', '대체로 맑음'], 2: ['⛅', '구름 조금'], 3: ['☁️', '흐림'],
+  45: ['🌫️', '안개'], 48: ['🌫️', '안개'],
+  51: ['🌦️', '이슬비'], 53: ['🌦️', '이슬비'], 55: ['🌦️', '이슬비'],
+  61: ['🌧️', '비'], 63: ['🌧️', '비'], 65: ['🌧️', '강한 비'],
+  71: ['🌨️', '눈'], 73: ['🌨️', '눈'], 75: ['🌨️', '강한 눈'],
+  80: ['🌦️', '소나기'], 81: ['🌧️', '소나기'], 82: ['⛈️', '강한 소나기'],
+  95: ['⛈️', '뇌우'], 96: ['⛈️', '뇌우'], 99: ['⛈️', '뇌우'],
+};
+
+async function fetchWeather(lat, lon) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weathercode,windspeed_10m&timezone=auto`;
+  const res = await fetch(url);
+  const data = await res.json();
+  const c = data.current;
+  const [icon, desc] = WMO_ICONS[c.weathercode] ?? ['🌡️', '알 수 없음'];
+  const temp = Math.round(c.temperature_2m);
+  const humidity = c.relative_humidity_2m;
+  const wind = Math.round(c.windspeed_10m);
+
+  document.getElementById('weather-content').innerHTML = `
+    <span class="weather-icon">${icon}</span>
+    <span class="weather-temp">${temp}°C</span>
+    <span class="weather-desc">${desc}</span>
+    <div class="weather-meta">
+      <span class="weather-meta-item">💧 습도 <strong>${humidity}%</strong></span>
+      <span class="weather-meta-item">💨 바람 <strong>${wind}km/h</strong></span>
+    </div>
+  `;
+}
+
+function setDate() {
+  const now = new Date();
+  const days = ['일', '월', '화', '수', '목', '금', '토'];
+  const str = `${now.getFullYear()}. ${now.getMonth()+1}. ${now.getDate()} (${days[now.getDay()]})`;
+  document.getElementById('weather-date').textContent = str;
+}
+
+function initWeather() {
+  setDate();
+  if (!navigator.geolocation) {
+    document.getElementById('weather-content').innerHTML =
+      '<span class="weather-desc">위치 정보를 지원하지 않는 브라우저입니다.</span>';
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(
+    pos => fetchWeather(pos.coords.latitude, pos.coords.longitude).catch(() => {
+      document.getElementById('weather-content').innerHTML =
+        '<span class="weather-desc">날씨 정보를 가져올 수 없어요.</span>';
+    }),
+    () => {
+      // 위치 거부 시 서울 기본값
+      fetchWeather(37.5665, 126.9780).catch(() => {
+        document.getElementById('weather-content').innerHTML =
+          '<span class="weather-desc">날씨 정보를 가져올 수 없어요.</span>';
+      });
+    }
+  );
+}
+
+initWeather();
+</script>
+</body>
+</html>
