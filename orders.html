@@ -216,7 +216,12 @@ function renderOrders(orders) {
 
   const sorted = [...pending, ...done];
   container.innerHTML = sorted.map((order, idx) => {
-    const itemChips = (order.items || []).map(i =>
+    let parsedItems = order.items;
+    if (typeof parsedItems === 'string') {
+      try { parsedItems = JSON.parse(parsedItems); } catch(e) { parsedItems = []; }
+    }
+    if (!Array.isArray(parsedItems)) parsedItems = [];
+    const itemChips = parsedItems.map(i =>
       `<span class="order-item-chip">${i.name} × ${i.qty}</span>`
     ).join('');
     const time = order.created_at
