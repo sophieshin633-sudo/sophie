@@ -1194,24 +1194,13 @@
   <p>© 2025 쉴만한 물가 · A Place to Rest by Still Waters</p>
 </footer>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ── Firebase 설정 (firebase-config.js 값으로 교체) ──
-const firebaseConfig = {
-  apiKey: "REPLACE_ME",
-  authDomain: "REPLACE_ME",
-  projectId: "REPLACE_ME",
-  storageBucket: "REPLACE_ME",
-  messagingSenderId: "REPLACE_ME",
-  appId: "REPLACE_ME"
-};
-let db = null;
-try {
-  firebase.initializeApp(firebaseConfig);
-  db = firebase.firestore();
-} catch(e) { console.warn('Firebase 미설정:', e.message); }
+// ── Supabase 설정 ──
+const SUPABASE_URL = 'https://lxlbqqmgztdjyyxqwzkh.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4bGJxcW1nenRkanl5eHF3emtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjcwMTUsImV4cCI6MjA5NTcwMzAxNX0.m8Z4Ky7OaHxOKE1OyVQhFSdeXyINgjM-pFlqpGKlyUU';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ── 장바구니 상태 ──
 let cart = []; // [{name, price, qty}]
@@ -1289,11 +1278,8 @@ async function submitOrder() {
     createdAt: new Date().toISOString()
   };
   try {
-    if (db) {
-      await db.collection('orders').add({ ...order, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
-    } else {
-      console.log('Firebase 미연결 — 주문 데이터:', order);
-    }
+    const { error } = await supabase.from('orders').insert([order]);
+    if (error) throw error;
     cart = [];
     updateCartUI();
     closeOrderModal();

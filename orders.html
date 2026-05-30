@@ -177,60 +177,36 @@
   <div class="loading">주문을 불러오는 중...</div>
 </div>
 
-<!-- Firebase SDK -->
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<!-- Supabase SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const firebaseConfig = {
-  apiKey: "REPLACE_ME",
-  authDomain: "REPLACE_ME",
-  projectId: "REPLACE_ME",
-  storageBucket: "REPLACE_ME",
-  messagingSenderId: "REPLACE_ME",
-  appId: "REPLACE_ME"
-};
+const SUPABASE_URL = 'https://lxlbqqmgztdjyyxqwzkh.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx4bGJxcW1nenRkanl5eHF3emtoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMjcwMTUsImV4cCI6MjA5NTcwMzAxNX0.m8Z4Ky7OaHxOKE1OyVQhFSdeXyINgjM-pFlqpGKlyUU';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let db = null;
-let unsubscribe = null;
-let orderCounter = 0;
-const orderNumMap = {}; // docId → 번호
-
-try {
-  firebase.initializeApp(firebaseConfig);
-  db = firebase.firestore();
-  listenOrders();
-} catch(e) {
-  console.warn('Firebase 미설정:', e.message);
-  document.getElementById('order-list').innerHTML = `
-    <div class="empty-state">
-      <span class="emoji">⚙️</span>
-      <p>Firebase 설정이 필요해요.<br/>firebase-config.js 값을 입력해주세요.</p>
-    </div>`;
+async function listenOrders() {
+  await fetchOrders();
+  supabase
+    .channel('orders-realtime')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'orders' }, () => fetchOrders())
+    .subscribe();
 }
 
-function listenOrders() {
-  if (!db) return;
-  unsubscribe = db.collection('orders')
-    .orderBy('createdAt', 'desc')
-    .onSnapshot(snapshot => {
-      const orders = [];
-      snapshot.forEach(doc => {
-        // 새 주문에 번호 부여
-        if (!orderNumMap[doc.id]) { orderCounter++; orderNumMap[doc.id] = orderCounter; }
-        orders.push({ id: doc.id, num: orderNumMap[doc.id], ...doc.data() });
-      });
-      renderOrders(orders);
-    }, err => {
-      console.error(err);
-    });
+async function fetchOrders() {
+  const { data, error } = await supabase
+    .from('orders')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error) { console.error(error); return; }
+  renderOrders(data || []);
 }
 
 function renderOrders(orders) {
   const pending = orders.filter(o => o.status === 'pending');
-  const done = orders.filter(o => o.status === 'done');
-  document.getElementById('stat-total').textContent = orders.length;
+  const done    = orders.filter(o => o.status === 'done');
+  document.getElementById('stat-total').textContent   = orders.length;
   document.getElementById('stat-pending').textContent = pending.length;
-  document.getElementById('stat-done').textContent = done.length;
+  document.getElementById('stat-done').textContent    = done.length;
 
   const container = document.getElementById('order-list');
   if (orders.length === 0) {
@@ -238,19 +214,18 @@ function renderOrders(orders) {
     return;
   }
 
-  // 대기 먼저, 그 다음 완료
   const sorted = [...pending, ...done];
-  container.innerHTML = sorted.map(order => {
+  container.innerHTML = sorted.map((order, idx) => {
     const itemChips = (order.items || []).map(i =>
       `<span class="order-item-chip">${i.name} × ${i.qty}</span>`
     ).join('');
-    const time = order.createdAt?.toDate
-      ? order.createdAt.toDate().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
+    const time = order.created_at
+      ? new Date(order.created_at).toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
       : '–';
     const isDone = order.status === 'done';
     return `
-      <div class="order-card ${isDone ? 'done' : ''}" id="card-${order.id}">
-        <div class="order-num">${sorted.indexOf(order) + 1}</div>
+      <div class="order-card ${isDone ? 'done' : ''}">
+        <div class="order-num">${idx + 1}</div>
         <div class="order-body">
           <div class="order-name-row">
             <span class="order-customer">${order.name}</span>
@@ -273,23 +248,21 @@ function renderOrders(orders) {
 
 async function markDone(id, btn) {
   btn.disabled = true;
-  try { await db.collection('orders').doc(id).update({ status: 'done' }); }
-  catch(e) { console.error(e); btn.disabled = false; }
+  const { error } = await supabase.from('orders').update({ status: 'done' }).eq('id', id);
+  if (error) { console.error(error); btn.disabled = false; }
 }
 
 async function deleteOrder(id) {
   if (!confirm('이 주문을 삭제할까요?')) return;
-  try { await db.collection('orders').doc(id).delete(); }
-  catch(e) { console.error(e); }
+  await supabase.from('orders').delete().eq('id', id);
 }
 
 async function clearDoneOrders() {
   if (!confirm('완료된 주문을 모두 삭제할까요?')) return;
-  const snap = await db.collection('orders').where('status','==','done').get();
-  const batch = db.batch();
-  snap.forEach(doc => batch.delete(doc.ref));
-  await batch.commit();
+  await supabase.from('orders').delete().eq('status', 'done');
 }
+
+listenOrders();
 </script>
 </body>
 </html>
