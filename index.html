@@ -1289,7 +1289,8 @@ async function submitOrder() {
     showToast('✅ 주문이 완료됐어요! 잠시만 기다려주세요.');
   } catch(e) {
     console.error(e);
-    showToast('주문 중 오류가 발생했어요. 다시 시도해주세요.');
+    const msg = e?.message || e?.error_description || JSON.stringify(e);
+    showToast('오류: ' + msg);
   } finally {
     btn.disabled = false; btn.textContent = '주문 완료';
   }
