@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>주문 리스트 · 쉴만한 물가</title>
+  <style>
+    @font-face {
+      font-family: 'S-Core Dream';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-4Regular.woff') format('woff');
+      font-weight: 400;
+    }
+    @font-face {
+      font-family: 'S-Core Dream';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-6Bold.woff') format('woff');
+      font-weight: 700;
+    }
+    @font-face {
+      font-family: 'S-Core Dream';
+      src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_six@1.2/S-CoreDream-8Heavy.woff') format('woff');
+      font-weight: 800;
+    }
+    :root {
+      --cream: #fdf6ed; --warm-white: #fff9f2;
+      --brown: #7c5c3e; --light-brown: #b8906a;
+      --deep: #4a3728; --muted: #9b7e66;
+      --card-bg: #fffaf4; --orange: #e86a1a;
+      --green: #4caf73; --red: #e85555;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'S-Core Dream',sans-serif; background:var(--cream); color:var(--deep); min-height:100vh; }
+
+    /* NAV */
+    nav {
+      position:sticky; top:0; z-index:50;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:16px 48px;
+      background:rgba(253,246,237,0.95); backdrop-filter:blur(12px);
+      border-bottom:1px solid rgba(180,140,100,0.15);
+    }
+    .nav-logo { font-size:1.1rem; font-weight:700; color:var(--brown); text-decoration:none; }
+    .nav-logo span { color:var(--light-brown); }
+    .nav-right { display:flex; align-items:center; gap:16px; }
+    .live-dot {
+      width:8px; height:8px; border-radius:50%; background:var(--green);
+      animation:pulse 2s infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+    .live-label { font-size:0.75rem; font-weight:600; color:var(--green); }
+    .clear-btn {
+      padding:8px 16px; border-radius:100px;
+      border:1.5px solid rgba(232,85,85,0.3);
+      background:transparent; cursor:pointer;
+      font-family:'S-Core Dream',sans-serif;
+      font-size:0.75rem; font-weight:600; color:var(--red);
+      transition:all 0.2s;
+    }
+    .clear-btn:hover { background:var(--red); color:#fff; border-color:var(--red); }
+
+    /* STATS */
+    .stats {
+      display:flex; gap:16px;
+      padding:24px 48px;
+      border-bottom:1px solid rgba(180,140,100,0.12);
+    }
+    .stat-card {
+      background:var(--card-bg); border-radius:16px;
+      padding:18px 24px; flex:1; max-width:180px;
+      border:1px solid rgba(180,140,100,0.15);
+    }
+    .stat-label { font-size:0.68rem; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; }
+    .stat-value { font-size:1.8rem; font-weight:800; color:var(--deep); }
+    .stat-value.orange { color:var(--orange); }
+    .stat-value.green { color:var(--green); }
+
+    /* ORDER LIST */
+    .order-list { padding:24px 48px 80px; display:flex; flex-direction:column; gap:16px; }
+    .order-card {
+      background:var(--card-bg); border-radius:20px;
+      border:1px solid rgba(180,140,100,0.15);
+      box-shadow:0 4px 16px rgba(124,92,62,0.06);
+      padding:24px 28px;
+      display:flex; align-items:flex-start; gap:20px;
+      transition:box-shadow 0.2s;
+    }
+    .order-card.done { opacity:0.55; }
+    .order-card:hover { box-shadow:0 8px 28px rgba(124,92,62,0.12); }
+    .order-num {
+      width:40px; height:40px; border-radius:50%; flex-shrink:0;
+      background:var(--orange); color:#fff;
+      font-size:0.85rem; font-weight:800;
+      display:flex; align-items:center; justify-content:center;
+    }
+    .order-card.done .order-num { background:var(--muted); }
+    .order-body { flex:1; }
+    .order-name-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+    .order-customer { font-size:1.05rem; font-weight:700; color:var(--deep); }
+    .order-status {
+      font-size:0.68rem; font-weight:700; letter-spacing:0.1em; text-transform:uppercase;
+      padding:3px 10px; border-radius:100px;
+    }
+    .status-pending { background:rgba(232,106,26,0.12); color:var(--orange); }
+    .status-done { background:rgba(76,175,115,0.12); color:var(--green); }
+    .order-items { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+    .order-item-chip {
+      background:var(--cream); border:1px solid rgba(180,140,100,0.2);
+      border-radius:100px; padding:4px 12px;
+      font-size:0.78rem; font-weight:500; color:var(--brown);
+    }
+    .order-meta { font-size:0.74rem; color:var(--muted); }
+    .order-total { font-weight:700; color:var(--brown); }
+    .order-actions { display:flex; gap:8px; align-items:center; }
+    .done-btn {
+      padding:10px 18px; border-radius:12px;
+      background:var(--green); color:#fff; border:none; cursor:pointer;
+      font-family:'S-Core Dream',sans-serif;
+      font-size:0.8rem; font-weight:700;
+      transition:background 0.2s, transform 0.15s;
+    }
+    .done-btn:hover { background:#3d9960; transform:scale(1.03); }
+    .done-btn:disabled { background:var(--muted); cursor:not-allowed; transform:none; }
+    .delete-btn {
+      width:34px; height:34px; border-radius:50%;
+      border:1.5px solid rgba(180,140,100,0.25);
+      background:transparent; cursor:pointer; color:var(--muted);
+      font-size:0.85rem;
+      transition:all 0.15s;
+    }
+    .delete-btn:hover { background:var(--red); color:#fff; border-color:var(--red); }
+
+    /* EMPTY */
+    .empty-state {
+      text-align:center; padding:80px 0; color:var(--muted);
+    }
+    .empty-state .emoji { font-size:3rem; display:block; margin-bottom:16px; }
+    .empty-state p { font-size:1rem; font-weight:500; }
+
+    /* LOADING */
+    .loading { text-align:center; padding:80px 0; color:var(--muted); font-size:0.9rem; }
+
+    @media (max-width:700px) {
+      nav { padding:14px 20px; }
+      .stats { padding:16px 20px; }
+      .order-list { padding:16px 20px 80px; }
+      .order-card { flex-direction:column; gap:12px; }
+      .order-actions { flex-direction:row; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">쉴만한 <span>물가</span></a>
+  <div class="nav-right">
+    <div class="live-dot"></div>
+    <span class="live-label">실시간</span>
+    <button class="clear-btn" onclick="clearDoneOrders()">완료 주문 삭제</button>
+  </div>
+</nav>
+
+<div class="stats">
+  <div class="stat-card">
+    <div class="stat-label">전체 주문</div>
+    <div class="stat-value" id="stat-total">–</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">대기 중</div>
+    <div class="stat-value orange" id="stat-pending">–</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">완료</div>
+    <div class="stat-value green" id="stat-done">–</div>
+  </div>
+</div>
+
+<div class="order-list" id="order-list">
+  <div class="loading">주문을 불러오는 중...</div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script>
+const firebaseConfig = {
+  apiKey: "REPLACE_ME",
+  authDomain: "REPLACE_ME",
+  projectId: "REPLACE_ME",
+  storageBucket: "REPLACE_ME",
+  messagingSenderId: "REPLACE_ME",
+  appId: "REPLACE_ME"
+};
+
+let db = null;
+let unsubscribe = null;
+let orderCounter = 0;
+const orderNumMap = {}; // docId → 번호
+
+try {
+  firebase.initializeApp(firebaseConfig);
+  db = firebase.firestore();
+  listenOrders();
+} catch(e) {
+  console.warn('Firebase 미설정:', e.message);
+  document.getElementById('order-list').innerHTML = `
+    <div class="empty-state">
+      <span class="emoji">⚙️</span>
+      <p>Firebase 설정이 필요해요.<br/>firebase-config.js 값을 입력해주세요.</p>
+    </div>`;
+}
+
+function listenOrders() {
+  if (!db) return;
+  unsubscribe = db.collection('orders')
+    .orderBy('createdAt', 'desc')
+    .onSnapshot(snapshot => {
+      const orders = [];
+      snapshot.forEach(doc => {
+        // 새 주문에 번호 부여
+        if (!orderNumMap[doc.id]) { orderCounter++; orderNumMap[doc.id] = orderCounter; }
+        orders.push({ id: doc.id, num: orderNumMap[doc.id], ...doc.data() });
+      });
+      renderOrders(orders);
+    }, err => {
+      console.error(err);
+    });
+}
+
+function renderOrders(orders) {
+  const pending = orders.filter(o => o.status === 'pending');
+  const done = orders.filter(o => o.status === 'done');
+  document.getElementById('stat-total').textContent = orders.length;
+  document.getElementById('stat-pending').textContent = pending.length;
+  document.getElementById('stat-done').textContent = done.length;
+
+  const container = document.getElementById('order-list');
+  if (orders.length === 0) {
+    container.innerHTML = `<div class="empty-state"><span class="emoji">☕</span><p>아직 주문이 없어요.</p></div>`;
+    return;
+  }
+
+  // 대기 먼저, 그 다음 완료
+  const sorted = [...pending, ...done];
+  container.innerHTML = sorted.map(order => {
+    const itemChips = (order.items || []).map(i =>
+      `<span class="order-item-chip">${i.name} × ${i.qty}</span>`
+    ).join('');
+    const time = order.createdAt?.toDate
+      ? order.createdAt.toDate().toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })
+      : '–';
+    const isDone = order.status === 'done';
+    return `
+      <div class="order-card ${isDone ? 'done' : ''}" id="card-${order.id}">
+        <div class="order-num">${sorted.indexOf(order) + 1}</div>
+        <div class="order-body">
+          <div class="order-name-row">
+            <span class="order-customer">${order.name}</span>
+            <span class="order-status ${isDone ? 'status-done' : 'status-pending'}">${isDone ? '완료' : '대기중'}</span>
+          </div>
+          <div class="order-items">${itemChips}</div>
+          <div class="order-meta">
+            <span class="order-total">${(order.total || 0).toLocaleString()}원</span>
+            &nbsp;·&nbsp; ${time}
+          </div>
+        </div>
+        <div class="order-actions">
+          ${!isDone ? `<button class="done-btn" onclick="markDone('${order.id}', this)">✓ 완료</button>` : '<span style="font-size:1.2rem">✅</span>'}
+          <button class="delete-btn" onclick="deleteOrder('${order.id}')" title="삭제">✕</button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+async function markDone(id, btn) {
+  btn.disabled = true;
+  try { await db.collection('orders').doc(id).update({ status: 'done' }); }
+  catch(e) { console.error(e); btn.disabled = false; }
+}
+
+async function deleteOrder(id) {
+  if (!confirm('이 주문을 삭제할까요?')) return;
+  try { await db.collection('orders').doc(id).delete(); }
+  catch(e) { console.error(e); }
+}
+
+async function clearDoneOrders() {
+  if (!confirm('완료된 주문을 모두 삭제할까요?')) return;
+  const snap = await db.collection('orders').where('status','==','done').get();
+  const batch = db.batch();
+  snap.forEach(doc => batch.delete(doc.ref));
+  await batch.commit();
+}
+</script>
+</body>
+</html>
